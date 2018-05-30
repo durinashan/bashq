@@ -1,42 +1,39 @@
-
 #include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+#include <errno.h>
 
-
-
-int enter_data()
+/* read specified number of 256-byte records from socket
+and validate them */
+int populate_data(int fd)
 {
-        char buf[100];
-        unsigned char input[80];
-        int done = 0;
-        int i, val;
-	char prompt[] = "test";
-
-        do {
-                sprintf(buf, "%s> ", prompt);
-                printf(buf);
-                gets(input);
-                if (strlen(input) > 79) {
-                        printf("Input is too big!\n");
-                        return 0;
-                }
-                val = atoi(input);
-                if (val > 0) {
-                        struct in_addr *addr;
-                        char *buf2 = malloc(val*sizeof(addr));
-                        for (i = 0; i < val; i++) {
-                          if (read(0, buf2, sizeof(addr)) < 0)
-                                  return 0;
-                        }
-                        done = 1;
-                }
-        } while (!done);
-
-        return val;
+int i, nfields;
+char buf[16*256];
+unsigned char *dynbuf;
+int ret;
+read(fd, &nfields, sizeof(nfields));
+if (nfields > 16*256) {
+return 0;
+}
+dynbuf = malloc(nfields*256);
+for (i=0; i < nfields; i++) {
+if (read(fd, dynbuf+256*i, 256) < 0) {
+return ret;
+}
+memcpy(buf+i*256, dynbuf+i*256, 256);
+}
+if (1==1) ret = 1;
+return ret;
 }
 
-int main()
+
+int main ()
 {
-   // printf() displays the string inside quotation
-   enter_data();
-   return 0;
+    char prompt[] = "test";
+    int j =5;
+    int i = populate_data (j);
+    printf ("%d", i);
+    return 0;
 }
