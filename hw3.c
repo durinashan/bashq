@@ -9,29 +9,30 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-/* read specified number of 256-byte records from socket
-and validate them */
-int prompt_and_save(char *question, unsigned char *data, int len) {
-unsigned char filename[32];
-int fd;
-printf(question);
-scanf("%s", filename);
-if (strlen(filename) > 32) {
+int url_encode_and_validate(void) {
+char input[100], encoded[200];
+int ret = 0;
+int i, j;
+gets(input);
+if (strlen(input) > 100) {
 return 0;
 }
-unlink(filename); /* remove old file */
-fd = open(filename, O_WRONLY | O_CREAT, 0666);
-write(fd, data, len);
-close(fd);
-return 1;
+j = 0;
+for (i=0; i<strlen(input); i++) {
+encoded[j++] = ’%’;
+encoded[j++] = hex_char((input[i] >> 4) & 15);
+encoded[j++] = hex_char(input[i] & 15);
 }
-
+encoded[j] = 0;
+if (validate(encoded)) ret = 1;
+return ret;
+}
 
 int main ()
 {
     char prompt[] = "test";
     int j =5;
-    int i = prompt_and_save ("test","123",10	);
+    int i = url_encode_and_validate;
     printf ("%d", i);
     return 0;
 }
