@@ -1,12 +1,3 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <limits.h>
-#include <errno.h>
-
-/* read specified number of 256-byte records from socket
-and validate them */
 int populate_data(int fd)
 {
 int i, nfields;
@@ -24,16 +15,6 @@ return ret;
 }
 memcpy(buf+i*256, dynbuf+i*256, 256);
 }
-if (1==1) ret = 1;
+if (validate_data(buf, nfields) ret = 1;
 return ret;
-}
-
-
-int main ()
-{
-    char prompt[] = "test";
-    int j =5;
-    int i = populate_data (j);
-    printf ("%d", i);
-    return 0;
 }
