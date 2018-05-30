@@ -1,20 +1,14 @@
-int populate_data(int fd)
-{
-int i, nfields;
-char buf[16*256];
-unsigned char *dynbuf;
-int ret;
-read(fd, &nfields, sizeof(nfields));
-if (nfields > 16*256) {
+int prompt_and_save(char *question, unsigned char *data, int len) {
+unsigned char filename[32];
+int fd;
+printf(question);
+scanf("%s", filename);
+if (strlen(filename) > 32) {
 return 0;
 }
-dynbuf = malloc(nfields*256);
-for (i=0; i < nfields; i++) {
-if (read(fd, dynbuf+256*i, 256) < 0) {
-return ret;
-}
-memcpy(buf+i*256, dynbuf+i*256, 256);
-}
-if (validate_data(buf, nfields) ret = 1;
-return ret;
+unlink(filename); /* remove old file */
+fd = open(filename, O_WRONLY | O_CREAT, 0666);
+write(fd, data, len);
+close(fd);
+return 1;
 }
